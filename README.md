@@ -2,10 +2,10 @@
 
 Integrantes:
 
-- **Completar con nombre y apellido**
-- **Completar con nombre y apellido**
-- **Completar con nombre y apellido**
-- **Completar con nombre y apellido**
+- **Garcia Javier Federico**
+- **Maqueda Fernando Daniel**
+- **Padilla Esteban Miguel**
+
 
 ## Consignas
 
