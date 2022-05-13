@@ -147,13 +147,14 @@ buscarAuto colorAuto carrera = case (find ((== colorAuto).color) carrera) of
 
     -- Apartado ii.
 usaPowerUp :: Color -> PowerUp -> Evento
-usaPowerUp color powerUp estadoActual = ((flip powerUp estadoActual).buscarAuto color) estadoActual
+usaPowerUp colorGatillador powerUp estadoActual = ((flip powerUp estadoActual).buscarAuto colorGatillador) estadoActual
 
   -- Ítem c.
 
 carreraDeEjemplo :: Carrera
-carreraDeEjemplo = map (\color -> Auto color 120 0) [ "rojo", "blanco", "azul", "negro"]
+carreraDeEjemplo = map (\colorAuto -> Auto colorAuto 120 0) [ "rojo", "blanco", "azul", "negro"]
 
+eventosDeEjemplo :: [Evento]
 eventosDeEjemplo = [
   correnTodos 30,
   "azul" `usaPowerUp` (jetPack 3),
@@ -164,8 +165,8 @@ eventosDeEjemplo = [
   correnTodos 10
   ]
 
--- > simularCarrera carreraDeEjemplo eventosDeEjemplo
--- Resultado: [(1,"azul"),(2,"blanco"),(3,"negro"),(4,"rojo")]
+      -- > simularCarrera carreraDeEjemplo eventosDeEjemplo
+      -- Resultado: [(1,"azul"),(2,"blanco"),(3,"negro"),(4,"rojo")]
 
 -- Punto 5.
 
@@ -175,14 +176,16 @@ eventosDeEjemplo = [
     -- PowerUp más (como los del Punto 3.) y luego utilizarlo usando la función usaPowerUp ya desarrollada:
     -- > usaPowerUp "azul" (misilTeledirigido "rojo") carreraDeEjemplo
 
-afectarAuto1 autoGatillador autoObjetivo
+activarMisilSi :: Auto -> Auto -> Auto
+activarMisilSi autoGatillador autoObjetivo
   | ((velocidad autoObjetivo) < 50) = impactarMisil autoGatillador autoObjetivo
   | otherwise = autoObjetivo
 
+impactarMisil :: Auto -> Auto -> Auto
 impactarMisil autoGatillador autoAfectado
   | vaAdelante autoGatillador autoAfectado = autoAfectado {velocidad = 10, distancia = ((+5).distancia) autoAfectado}
   | otherwise = autoAfectado {velocidad = 10}
 
   -- Ítem b.
 misilTeledirigido :: Color -> PowerUp
-misilTeledirigido colorAfectado autoGatillador = afectarALosQueCumplen ((== colorAfectado).color) (afectarAuto1 autoGatillador)
+misilTeledirigido colorAfectado autoGatillador = afectarALosQueCumplen ((== colorAfectado).color) (activarMisilSi autoGatillador)
