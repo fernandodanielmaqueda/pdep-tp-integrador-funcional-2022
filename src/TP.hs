@@ -1,7 +1,6 @@
 module TP where
 import Text.Show.Functions
 import Data.List
-import Data.Maybe
 
 ----------------------
 -- Código inicial
@@ -20,6 +19,8 @@ afectarALosQueCumplen criterio efecto lista
 -- Definir los tipos de datos y funciones para el TP a partir de acá
 ----------------------------------------------------------------------
 
+-- Tipos de datos iniciales
+
 type Color = String
 type Velocidad = Int
 type Distancia = Int
@@ -32,23 +33,27 @@ data Auto = Auto {
 
 type Carrera = [Auto]
 
-autoa :: Auto
-autoa = Auto {color = "rojo", velocidad = 25, distancia = 0}
+-- Ejemplos para pruebas
 
-autob :: Auto
-autob = Auto {color = "amarillo", velocidad = 200, distancia = 10}
+autoA :: Auto
+autoA = Auto {color = "rojo", velocidad = 25, distancia = 0}
 
-autoc :: Auto
-autoc = Auto { color = "verde", velocidad = 300, distancia = 15}
+autoB :: Auto
+autoB = Auto {color = "amarillo", velocidad = 200, distancia = 10}
 
-autod :: Auto
-autod = Auto {color = "azul", velocidad = 400, distancia = 20}
+autoC :: Auto
+autoC = Auto { color = "verde", velocidad = 300, distancia = 15}
 
-autoe :: Auto
-autoe = Auto { color = "violeta", velocidad = 25, distancia = 30}
+autoD :: Auto
+autoD = Auto {color = "azul", velocidad = 400, distancia = 20}
 
-carreraa :: Carrera
-carreraa = [autoa,autob,autoc,autod,autoe]
+autoE :: Auto
+autoE = Auto { color = "violeta", velocidad = 25, distancia = 30}
+
+carreraA :: Carrera
+carreraA = [autoA,autoB,autoC,autoD,autoE]
+
+-- Punto 1.
 
 sonDistintos :: Auto -> Auto -> Bool
 sonDistintos auto1 = ((color auto1) /=).color
@@ -59,6 +64,7 @@ distanciaEntreAutos auto1 = abs.((distancia auto1)-).distancia
 distanciaCerca :: Distancia
 distanciaCerca = 10
 
+  -- Ítem a.
 estanCerca :: Auto -> Auto -> Bool
 estanCerca auto1 auto2 = (sonDistintos auto1 auto2) && (((< distanciaCerca).distanciaEntreAutos auto1) auto2)
 
@@ -70,49 +76,68 @@ type Cantidad = Int
 cuantosLeVanGanando :: Auto -> Carrera -> Cantidad
 cuantosLeVanGanando = (length.).filter.vaAdelante
 
+  -- Ítem b.
 vaTranquilo :: Auto -> Carrera -> Bool
 vaTranquilo auto carrera = ((all (== False).map (estanCerca auto)) carrera) && (((== 0).cuantosLeVanGanando auto) carrera)
 
 type Puesto = Int
 
+  -- Ítem c.
 puesto :: Auto -> Carrera -> Puesto
 puesto = ((+ 1).).cuantosLeVanGanando
 
+-- Punto 2.
+
 type Tiempo = Int
 
+  -- Ítem a.
 correr :: Tiempo -> Auto -> Auto
 correr tiempo auto = auto {distancia = ((+ (distancia auto)).(* tiempo).velocidad) auto}
 
+  -- Ítem b.
+
+    -- Apartado i.
 alterarVelocidadAuto :: (Velocidad -> Velocidad) -> Auto -> Auto
 alterarVelocidadAuto modificadorDeVelocidad auto = auto {velocidad = modificadorDeVelocidad (velocidad auto)}
 
 restarVelocidades :: Velocidad -> Velocidad -> Velocidad
 restarVelocidades = (max 0.).subtract
 
+    -- Apartado ii.
 bajarVelocidadAuto :: Velocidad -> Auto -> Auto
 bajarVelocidadAuto = alterarVelocidadAuto.restarVelocidades
 
+-- Punto 3.
+
 type PowerUp = Auto -> Carrera -> Carrera
 
+  -- Ítem a.
 terremoto :: PowerUp
 terremoto autoGatillador = afectarALosQueCumplen (estanCerca autoGatillador) (bajarVelocidadAuto 50)
 
+  -- Ítem b.
 miguelitos :: Velocidad -> PowerUp
 miguelitos velocidadABajar autoGatillador = afectarALosQueCumplen (((not.).vaAdelante) autoGatillador) (bajarVelocidadAuto velocidadABajar)
 
+  -- Ítem c.
 jetPack :: Tiempo -> PowerUp
 jetPack duracion autoGatillador = afectarALosQueCumplen (((not.).sonDistintos) autoGatillador) ((correr duracion))
+
+-- Punto 4.
 
 type Evento = Carrera -> Carrera
 type TablaDePosiciones = [(Puesto, Color)]
 
-hacerTablaDePosiciones :: Carrera -> [(Puesto,Color)]
-hacerTablaDePosiciones carrera = map (\auto -> (puesto auto carrera,color auto)) carrera
+generarTablaDePosiciones :: Carrera -> [(Puesto,Color)]
+generarTablaDePosiciones carrera = map (\auto -> (puesto auto carrera,color auto)) carrera
 
+  -- Ítem a.
 simularCarrera :: Carrera -> [Evento] -> TablaDePosiciones
-simularCarrera estadoInicial eventos = (ordenarPor (fst).hacerTablaDePosiciones.foldl (\carrera evento -> evento carrera) estadoInicial) eventos
---flip $
+simularCarrera estadoInicial eventos = (ordenarPor fst.generarTablaDePosiciones.foldl (flip ($)) estadoInicial) eventos
 
+  -- Ítem b.
+
+    -- Apartado i.
 correnTodos :: Tiempo -> Evento
 correnTodos tiempo carrera = map (correr tiempo) carrera
 
@@ -120,8 +145,11 @@ buscarAuto :: Color -> Carrera -> Auto
 buscarAuto colorAuto carrera = case (find ((== colorAuto).color) carrera) of
   Just auto -> auto
 
+    -- Apartado ii.
 usaPowerUp :: Color -> PowerUp -> Evento
 usaPowerUp color powerUp estadoActual = ((flip powerUp estadoActual).buscarAuto color) estadoActual
+
+  -- Ítem c.
 
 carreraDeEjemplo :: Carrera
 carreraDeEjemplo = map (\color -> Auto color 120 0) [ "rojo", "blanco", "azul", "negro"]
@@ -136,21 +164,25 @@ eventosDeEjemplo = [
   correnTodos 10
   ]
 
-{-
-> simularCarrera carreraDeEjemplo eventosDeEjemplo
-RESULTADO: [(3,"negro"),(4,"rojo"),(1,"azul"),(2,"blanco")]
--}
+-- > simularCarrera carreraDeEjemplo eventosDeEjemplo
+-- Resultado: [(1,"azul"),(2,"blanco"),(3,"negro"),(4,"rojo")]
 
--- 5. a.: Sí, la solución desarrollada hasta este punto permite agregar el nuevo power up sin necesidad de cambiar algo de lo desarrollado en los puntos anteriores.
--- > usaPowerUp "azul" (misilTeledirigido "rojo") carreraa
+-- Punto 5.
 
-afectarAuto1 autoGatillador autoAfectado
-  | ((velocidad autoAfectado) < 50) = afectarAuto2 autoGatillador autoAfectado
-  | otherwise = autoAfectado
+  -- Ítem a.
+    -- Sí, la solución desarrollada hasta este punto permite agregar el nuevo power up sin necesidad de
+    -- cambiar algo de lo desarrollado en los puntos anteriores, porque se lo puede implementar como un
+    -- PowerUp más (como los del Punto 3.) y luego utilizarlo usando la función usaPowerUp ya desarrollada:
+    -- > usaPowerUp "azul" (misilTeledirigido "rojo") carreraDeEjemplo
 
-afectarAuto2 autoGatillador autoAfectado
+afectarAuto1 autoGatillador autoObjetivo
+  | ((velocidad autoObjetivo) < 50) = impactarMisil autoGatillador autoObjetivo
+  | otherwise = autoObjetivo
+
+impactarMisil autoGatillador autoAfectado
   | vaAdelante autoGatillador autoAfectado = autoAfectado {velocidad = 10, distancia = ((+5).distancia) autoAfectado}
   | otherwise = autoAfectado {velocidad = 10}
 
+  -- Ítem b.
 misilTeledirigido :: Color -> PowerUp
 misilTeledirigido colorAfectado autoGatillador = afectarALosQueCumplen ((== colorAfectado).color) (afectarAuto1 autoGatillador)
