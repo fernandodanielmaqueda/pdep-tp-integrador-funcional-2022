@@ -1,7 +1,7 @@
 module TP where
 import Text.Show.Functions
---import Data.List
---import Data.Maybe
+import Data.List
+import Data.Maybe
 
 ----------------------
 -- Código inicial
@@ -30,42 +30,22 @@ data Auto = Auto {
   distancia :: Distancia
 } deriving (Show, Eq)
 
+type Carrera = [Auto]
+
 autoa :: Auto
-autoa = Auto {
-  color = "rojo",
-  velocidad = 100,
-  distancia = 0
-}
+autoa = Auto {color = "rojo", velocidad = 25, distancia = 0}
 
 autob :: Auto
-autob = Auto {
-  color = "amarillo",
-  velocidad = 200,
-  distancia = 10
-}
+autob = Auto {color = "amarillo", velocidad = 200, distancia = 10}
 
 autoc :: Auto
-autoc = Auto {
-  color = "verde",
-  velocidad = 300,
-  distancia = 15
-}
+autoc = Auto { color = "verde", velocidad = 300, distancia = 15}
 
 autod :: Auto
-autod = Auto {
-  color = "azul",
-  velocidad = 400,
-  distancia = 20
-}
+autod = Auto {color = "azul", velocidad = 400, distancia = 20}
 
 autoe :: Auto
-autoe = Auto {
-  color = "violeta",
-  velocidad = 500,
-  distancia = 30
-}
-
-type Carrera = [Auto]
+autoe = Auto { color = "violeta", velocidad = 25, distancia = 30}
 
 carreraa :: Carrera
 carreraa = [autoa,autob,autoc,autod,autoe]
@@ -126,5 +106,51 @@ jetPack duracion autoGatillador = afectarALosQueCumplen (((not.).sonDistintos) a
 type Evento = Carrera -> Carrera
 type TablaDePosiciones = [(Puesto, Color)]
 
+hacerTablaDePosiciones :: Carrera -> [(Puesto,Color)]
+hacerTablaDePosiciones carrera = map (\auto -> (puesto auto carrera,color auto)) carrera
+
 simularCarrera :: Carrera -> [Evento] -> TablaDePosiciones
-simularCarrera = undefined
+simularCarrera estadoInicial eventos = (ordenarPor (fst).hacerTablaDePosiciones.foldl (\carrera evento -> evento carrera) estadoInicial) eventos
+--flip $
+
+correnTodos :: Tiempo -> Evento
+correnTodos tiempo carrera = map (correr tiempo) carrera
+
+buscarAuto :: Color -> Carrera -> Auto
+buscarAuto colorAuto carrera = case (find ((== colorAuto).color) carrera) of
+  Just auto -> auto
+
+usaPowerUp :: Color -> PowerUp -> Evento
+usaPowerUp color powerUp estadoActual = ((flip powerUp estadoActual).buscarAuto color) estadoActual
+
+carreraDeEjemplo :: Carrera
+carreraDeEjemplo = map (\color -> Auto color 120 0) [ "rojo", "blanco", "azul", "negro"]
+
+eventosDeEjemplo = [
+  correnTodos 30,
+  "azul" `usaPowerUp` (jetPack 3),
+  "blanco" `usaPowerUp` terremoto,
+  correnTodos 40,
+  "blanco" `usaPowerUp` (miguelitos 20),
+  "negro" `usaPowerUp` (jetPack 6),
+  correnTodos 10
+  ]
+
+{-
+> simularCarrera carreraDeEjemplo eventosDeEjemplo
+RESULTADO: [(3,"negro"),(4,"rojo"),(1,"azul"),(2,"blanco")]
+-}
+
+-- 5. a.: Sí, la solución desarrollada hasta este punto permite agregar el nuevo power up sin necesidad de cambiar algo de lo desarrollado en los puntos anteriores.
+-- > usaPowerUp "azul" (misilTeledirigido "rojo") carreraa
+
+afectarAuto1 autoGatillador autoAfectado
+  | ((velocidad autoAfectado) < 50) = afectarAuto2 autoGatillador autoAfectado
+  | otherwise = autoAfectado
+
+afectarAuto2 autoGatillador autoAfectado
+  | vaAdelante autoGatillador autoAfectado = autoAfectado {velocidad = 10, distancia = ((+5).distancia) autoAfectado}
+  | otherwise = autoAfectado {velocidad = 10}
+
+misilTeledirigido :: Color -> PowerUp
+misilTeledirigido colorAfectado autoGatillador = afectarALosQueCumplen ((== colorAfectado).color) (afectarAuto1 autoGatillador)
