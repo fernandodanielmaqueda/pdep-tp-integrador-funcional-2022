@@ -61,24 +61,29 @@ sonDistintos auto1 = ((color auto1) /=).color
 distanciaEntreAutos :: Auto -> Auto -> Distancia
 distanciaEntreAutos auto1 = abs.((distancia auto1)-).distancia
 
-distanciaCerca :: Distancia
-distanciaCerca = 10
-
   -- Ítem a.
 estanCerca :: Auto -> Auto -> Bool
 estanCerca auto1 auto2 = (sonDistintos auto1 auto2) && (((< distanciaCerca).distanciaEntreAutos auto1) auto2)
+  where
+    distanciaCerca = 10
 
-vaAdelante :: Auto -> Auto -> Bool
-vaAdelante auto1 = ((> (distancia auto1)).distancia)
+vaAtrasDe :: Auto -> Auto -> Bool
+vaAtrasDe auto1 = ((> (distancia auto1)).distancia)
 
 type Cantidad = Int
 
 cuantosLeVanGanando :: Auto -> Carrera -> Cantidad
-cuantosLeVanGanando = (length.).filter.vaAdelante
+cuantosLeVanGanando = (length.).filter.vaAtrasDe
+
+noTieneNingunAutoCerca :: Auto -> Carrera -> Bool
+noTieneNingunAutoCerca = (all (== False).).map.estanCerca
+
+lesVaGanandoATodos :: Auto -> Carrera -> Bool
+lesVaGanandoATodos = ((== 0).).cuantosLeVanGanando
 
   -- Ítem b.
 vaTranquilo :: Auto -> Carrera -> Bool
-vaTranquilo auto carrera = ((all (== False).map (estanCerca auto)) carrera) && (((== 0).cuantosLeVanGanando auto) carrera)
+vaTranquilo auto carrera = (noTieneNingunAutoCerca auto carrera) && (lesVaGanandoATodos auto carrera)
 
 type Puesto = Int
 
@@ -117,7 +122,7 @@ terremoto autoGatillador = afectarALosQueCumplen (estanCerca autoGatillador) (ba
 
   -- Ítem b.
 miguelitos :: Velocidad -> PowerUp
-miguelitos velocidadABajar autoGatillador = afectarALosQueCumplen (((not.).vaAdelante) autoGatillador) (bajarVelocidadAuto velocidadABajar)
+miguelitos velocidadABajar autoGatillador = afectarALosQueCumplen (((not.).vaAtrasDe) autoGatillador) (bajarVelocidadAuto velocidadABajar)
 
   -- Ítem c.
 jetPack :: Tiempo -> PowerUp
@@ -183,7 +188,7 @@ activarMisilSi autoGatillador autoObjetivo
 
 impactarMisil :: Auto -> Auto -> Auto
 impactarMisil autoGatillador autoAfectado
-  | vaAdelante autoGatillador autoAfectado = autoAfectado {velocidad = 10, distancia = ((+5).distancia) autoAfectado}
+  | vaAtrasDe autoGatillador autoAfectado = autoAfectado {velocidad = 10, distancia = ((+5).distancia) autoAfectado}
   | otherwise = autoAfectado {velocidad = 10}
 
   -- Ítem b.
