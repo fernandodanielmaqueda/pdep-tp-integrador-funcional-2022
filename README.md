@@ -5,6 +5,7 @@ Integrantes:
 - **Garcia Javier Federico**
 - **Maqueda Fernando Daniel**
 - **Padilla Esteban Miguel**
+- **Marcelo Alejandro Rodriguez Santi**
 
 
 ## Consignas
