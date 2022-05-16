@@ -42,13 +42,13 @@ autoB :: Auto
 autoB = Auto {color = "amarillo", velocidad = 200, distancia = 10}
 
 autoC :: Auto
-autoC = Auto { color = "verde", velocidad = 300, distancia = 15}
+autoC = Auto {color = "verde", velocidad = 300, distancia = 15}
 
 autoD :: Auto
 autoD = Auto {color = "azul", velocidad = 400, distancia = 20}
 
 autoE :: Auto
-autoE = Auto { color = "violeta", velocidad = 25, distancia = 30}
+autoE = Auto {color = "violeta", velocidad = 25, distancia = 30}
 
 carreraA :: Carrera
 carreraA = [autoA,autoB,autoC,autoD,autoE]
@@ -56,7 +56,7 @@ carreraA = [autoA,autoB,autoC,autoD,autoE]
 -- Punto 1.
 
 sonDistintos :: Auto -> Auto -> Bool
-sonDistintos auto1 = ((color auto1) /=).color
+sonDistintos auto1 auto2 = (color auto1) /= (color auto2)
 
 distanciaEntreAutos :: Auto -> Auto -> Distancia
 distanciaEntreAutos auto1 = abs.((distancia auto1)-).distancia
@@ -126,7 +126,7 @@ miguelitos velocidadABajar autoGatillador = afectarALosQueCumplen (((not.).vaAtr
 
   -- Ítem c.
 jetPack :: Tiempo -> PowerUp
-jetPack duracion autoGatillador = afectarALosQueCumplen (((not.).sonDistintos) autoGatillador) ((correr duracion))
+jetPack duracion autoGatillador = afectarALosQueCumplen (((not.).sonDistintos) autoGatillador) (alterarVelocidadAuto (`div` 2).correr duracion.alterarVelocidadAuto (*2))
 
 -- Punto 4.
 
