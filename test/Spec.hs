@@ -85,15 +85,15 @@ main = hspec $ do
 
     describe "Punto 4." $ do
       describe "Ítem a. simularCarrera" $ do
-        it "Template de test" $ do
-          1 + 1 `shouldBe` 2
+        it "carrera simulada del item C." $ do
+         simularCarrera carreraDeEjemplo eventosDeEjemplo `shouldBe` [(1,"azul"),(2,"blanco"),(3,"negro"),(4,"rojo")]
       describe "Ítem b. Generar los eventos de una carrera" $ do
         describe "Apartado i. correnTodos" $ do
-          it "Template de test" $ do
-            1 + 1 `shouldBe` 2          
+          it "correnTodos por un tiempo de 20 segundos" $ do
+            correnTodos 20 carreraA `shouldBe` [autoA{distancia = 500},autoB{distancia = 4010}, autoC{distancia = 6015}, autoD{distancia = 8020}, autoE{distancia = 530}]          
         describe "Apartado ii. usaPowerUp" $ do
-          it "Template de test" $ do
-            1 + 1 `shouldBe` 2                
+          it "un Auto utiliza terremoto" $ do
+            usaPowerUp "rojo" terremoto carreraA `shouldBe` carreraA           
       it "Ítem c. Prueba de lo desarrollado" $ do
         simularCarrera carreraDeEjemplo eventosDeEjemplo `shouldBe` [(1,"azul"),(2,"blanco"),(3,"negro"),(4,"rojo")]
 
