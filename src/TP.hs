@@ -33,26 +33,6 @@ data Auto = Auto {
 
 type Carrera = [Auto]
 
--- Ejemplos para pruebas
-
-autoA :: Auto
-autoA = Auto {color = "rojo", velocidad = 25, distancia = 0}
-
-autoB :: Auto
-autoB = Auto {color = "amarillo", velocidad = 200, distancia = 10}
-
-autoC :: Auto
-autoC = Auto {color = "verde", velocidad = 300, distancia = 15}
-
-autoD :: Auto
-autoD = Auto {color = "azul", velocidad = 400, distancia = 20}
-
-autoE :: Auto
-autoE = Auto {color = "violeta", velocidad = 25, distancia = 30}
-
-carreraA :: Carrera
-carreraA = [autoA,autoB,autoC,autoD,autoE]
-
 -- Punto 1.
 
 sonDistintos :: Auto -> Auto -> Bool
@@ -126,7 +106,7 @@ miguelitos velocidadABajar autoGatillador = afectarALosQueCumplen (((not.).vaAtr
 
   -- Ítem c.
 jetPack :: Tiempo -> PowerUp
-jetPack duracion autoGatillador = afectarALosQueCumplen (((not.).sonDistintos) autoGatillador) (alterarVelocidadAuto (`div` 2).correr duracion.alterarVelocidadAuto (*2))
+jetPack duracion autoGatillador = afectarALosQueCumplen (((not.).sonDistintos) autoGatillador) ((alterarVelocidadAuto (`div` 2).correr duracion).alterarVelocidadAuto (*2))
 
 -- Punto 4.
 
@@ -194,3 +174,25 @@ impactarMisil autoGatillador autoAfectado
   -- Ítem b.
 misilTeledirigido :: Color -> PowerUp
 misilTeledirigido colorAfectado autoGatillador = afectarALosQueCumplen ((== colorAfectado).color) (activarMisilSi autoGatillador)
+
+{- Ejemplos para pruebas
+
+autoA :: Auto
+autoA = Auto {color = "rojo", velocidad = 25, distancia = 0}
+
+autoB :: Auto
+autoB = Auto {color = "amarillo", velocidad = 200, distancia = 10}
+
+autoC :: Auto
+autoC = Auto {color = "verde", velocidad = 300, distancia = 15}
+
+autoD :: Auto
+autoD = Auto {color = "azul", velocidad = 400, distancia = 20}
+
+autoE :: Auto
+autoE = Auto {color = "violeta", velocidad = 25, distancia = 30}
+
+carreraA :: Carrera
+carreraA = [autoA,autoB,autoC,autoD,autoE]
+
+-}

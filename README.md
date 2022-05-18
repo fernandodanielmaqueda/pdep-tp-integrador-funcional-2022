@@ -2,10 +2,10 @@
 
 Integrantes:
 
-- **Garcia Javier Federico**
-- **Maqueda Fernando Daniel**
-- **Padilla Esteban Miguel**
-- **Marcelo Alejandro Rodriguez Santi**
+- **García, Javier Federico**
+- **Maqueda, Fernando Daniel**
+- **Padilla, Esteban Miguel**
+- **Rodriguez Santi, Marcelo Alejandro**
 
 
 ## Consignas
