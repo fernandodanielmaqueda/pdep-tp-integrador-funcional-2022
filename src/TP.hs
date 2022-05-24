@@ -56,7 +56,7 @@ cuantosLeVanGanando :: Auto -> Carrera -> Cantidad
 cuantosLeVanGanando = (length.).filter.vaAtrasDe
 
 noTieneNingunAutoCerca :: Auto -> Carrera -> Bool
-noTieneNingunAutoCerca = (all (== False).).map.estanCerca
+noTieneNingunAutoCerca auto = not.any (estanCerca auto)
 
 lesVaGanandoATodos :: Auto -> Carrera -> Bool
 lesVaGanandoATodos = ((== 0).).cuantosLeVanGanando
@@ -102,11 +102,11 @@ terremoto autoGatillador = afectarALosQueCumplen (estanCerca autoGatillador) (ba
 
   -- Ítem b.
 miguelitos :: Velocidad -> PowerUp
-miguelitos velocidadABajar autoGatillador = afectarALosQueCumplen (((not.).vaAtrasDe) autoGatillador) (bajarVelocidadAuto velocidadABajar)
+miguelitos velocidadABajar autoGatillador = afectarALosQueCumplen (not.vaAtrasDe autoGatillador) (bajarVelocidadAuto velocidadABajar)
 
   -- Ítem c.
 jetPack :: Tiempo -> PowerUp
-jetPack duracion autoGatillador = afectarALosQueCumplen (((not.).sonDistintos) autoGatillador) ((alterarVelocidadAuto (`div` 2).correr duracion).alterarVelocidadAuto (*2))
+jetPack duracion autoGatillador = afectarALosQueCumplen (not.sonDistintos autoGatillador) ((alterarVelocidadAuto (`div` 2).correr duracion).alterarVelocidadAuto (*2))
 
 -- Punto 4.
 
@@ -116,9 +116,12 @@ type TablaDePosiciones = [(Puesto, Color)]
 generarTablaDePosiciones :: Carrera -> [(Puesto,Color)]
 generarTablaDePosiciones carrera = map (\auto -> (puesto auto carrera,color auto)) carrera
 
+puestoCarrera :: (Puesto, Color) -> Puesto
+puestoCarrera = fst
+
   -- Ítem a.
 simularCarrera :: Carrera -> [Evento] -> TablaDePosiciones
-simularCarrera estadoInicial eventos = (ordenarPor fst.generarTablaDePosiciones.foldl (flip ($)) estadoInicial) eventos
+simularCarrera estadoInicial eventos = (ordenarPor puestoCarrera.generarTablaDePosiciones.foldl (flip ($)) estadoInicial) eventos
 
   -- Ítem b.
 
@@ -127,8 +130,7 @@ correnTodos :: Tiempo -> Evento
 correnTodos tiempo carrera = map (correr tiempo) carrera
 
 buscarAuto :: Color -> Carrera -> Auto
-buscarAuto colorAuto carrera = case (find ((== colorAuto).color) carrera) of
-  Just auto -> auto
+buscarAuto colorAuto = head.filter ((== colorAuto).color)
 
     -- Apartado ii.
 usaPowerUp :: Color -> PowerUp -> Evento
