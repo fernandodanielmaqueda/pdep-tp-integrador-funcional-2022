@@ -53,15 +53,17 @@ vaAtrasDe auto1 = ((> (distancia auto1)).distancia)
 type Cantidad = Int
 
 cuantosLeVanGanando :: Auto -> Carrera -> Cantidad
-cuantosLeVanGanando = (length.).filter.vaAtrasDe
+-- cuantosLeVanGanando'  = (length.).filter.vaAtrasDe 
+cuantosLeVanGanando unAuto = length . filter (vaAtrasDe unAuto) 
 
 noTieneNingunAutoCerca :: Auto -> Carrera -> Bool
 noTieneNingunAutoCerca auto = not.any (estanCerca auto)
 
 lesVaGanandoATodos :: Auto -> Carrera -> Bool
-lesVaGanandoATodos = ((== 0).).cuantosLeVanGanando
+-- lesVaGanandoATodos' = ((== 0).).cuantosLeVanGanando
+lesVaGanandoATodos unAuto = (== 0) . cuantosLeVanGanando unAuto
 
-  -- Ítem b.
+ -- Ítem b.
 vaTranquilo :: Auto -> Carrera -> Bool
 vaTranquilo auto carrera = (noTieneNingunAutoCerca auto carrera) && (lesVaGanandoATodos auto carrera)
 
