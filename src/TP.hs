@@ -71,8 +71,8 @@ type Puesto = Int
 
   -- Ítem c.
 puesto :: Auto -> Carrera -> Puesto
-puesto = ((+ 1).).cuantosLeVanGanando
-
+puesto auto = (+1).cuantosLeVanGanando auto
+--puesto' = ((+ 1).).cuantosLeVanGanando
 -- Punto 2.
 
 type Tiempo = Int
@@ -88,11 +88,14 @@ alterarVelocidadAuto :: (Velocidad -> Velocidad) -> Auto -> Auto
 alterarVelocidadAuto modificadorDeVelocidad auto = auto {velocidad = modificadorDeVelocidad (velocidad auto)}
 
 restarVelocidades :: Velocidad -> Velocidad -> Velocidad
-restarVelocidades = (max 0.).subtract
+restarVelocidades velocidadRestar = (max 0).subtract velocidadRestar
+--restarVelocidades' = (max 0.).subtract
 
     -- Apartado ii.
 bajarVelocidadAuto :: Velocidad -> Auto -> Auto
-bajarVelocidadAuto = alterarVelocidadAuto.restarVelocidades
+bajarVelocidadAuto velocidad = alterarVelocidadAuto (restarVelocidades velocidad)
+
+--bajarVelocidadAuto' = alterarVelocidadAuto.restarVelocidades
 
 -- Punto 3.
 
